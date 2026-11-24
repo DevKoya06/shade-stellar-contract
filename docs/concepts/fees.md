@@ -187,3 +187,6 @@ The merchant's per-merchant override (`200` bps) is what the volume discount is 
 - [Amounts, token decimals, and rounding](amounts-and-rounding.md)
 
 ← [Back to concepts](README.md)
+
+
+Platform revenue never accumulates in the Shade hub contract. Each payment's platform fee is transferred directly from the payer to the platform account within the same atomic call that pays the merchant (see [Payment flows](payments.md#walkthrough-pay_invoice)), so the hub holds no fee balance after a payment completes. The platform account defaults to the admin address until `set_platform_account` configures a dedicated treasury. Because no fee balance is retained by the hub, no admin revenue withdrawal function is required; the earlier `// TODO` in `components/admin.rs` is resolved by this documented design.

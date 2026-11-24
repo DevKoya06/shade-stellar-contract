@@ -4,6 +4,13 @@ use soroban_sdk::{panic_with_error, Env};
 
 const MAX_SLIPPAGE_BPS: u32 = 10_000;
 
+// Payment routing note: the payment flow in this module only validates the payload.
+// Token transfers for payments are settled directly to their destinations (the
+// merchant and the platform fee account) and are never parked on the hub, so
+// no platform revenue balance accumulates here. Because nothing builds up on the
+// hub from payments, no admin revenue withdrawal function is required from this
+// module. See docs/concepts/fees.md for the full platform fee routing.
+
 pub fn validate_payment_payload(env: &Env, payload: &PaymentPayload) {
     match &payload.route {
         PaymentRoute::Direct => {

@@ -4,7 +4,13 @@ use crate::events;
 use crate::types::{DataKey, OracleConfig};
 use soroban_sdk::{panic_with_error, token, Address, Env, Vec};
 
-// TODO: create the functionality for withdrawing revenue by admin.
+// Platform revenue is never held by the hub contract: fees are transferred
+// directly from the payer to the platform account during payment
+// (see `platform_fee::execute_split_transfers`), and the expired-invoice refund
+// flow returns funds to the payer rather than parking them in the hub. Because
+// the hub does not accumulate a platform-revenue balance, no withdrawal function
+// is required here. Tokens sent to the hub address by mistake are outside the
+// protocol's accounting and are not recoverable through this module.
 
 pub fn add_accepted_token(env: &Env, admin: &Address, token: &Address) {
     reentrancy::enter(env);

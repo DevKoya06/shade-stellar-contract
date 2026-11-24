@@ -7,6 +7,12 @@ use soroban_sdk::{panic_with_error, token, Address, Env};
 const MAX_FEE_BPS: i128 = 10_000;
 pub const FEE_UPDATE_DELAY: u64 = 172_800; // 48 hours in seconds
 
+// Revenue flow note: platform fees are never accumulated in the hub contract.
+// `execute_split_transfers` moves the platform fee directly from the payer (or
+// the customer's allowance) to the platform account in the same transaction as
+// the merchant payment. Because no token balance is retained by the hub for
+// platform revenue, no `withdraw_platform_revenue` function is required.
+
 fn assert_fee_operator(env: &Env, caller: &Address) {
     caller.require_auth();
     if !access_control::has_role(env, caller, Role::Admin)
