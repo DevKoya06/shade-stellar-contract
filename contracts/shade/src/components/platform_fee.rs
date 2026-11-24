@@ -12,6 +12,9 @@ pub const FEE_UPDATE_DELAY: u64 = 172_800; // 48 hours in seconds
 // the customer's allowance) to the platform account in the same transaction as
 // the merchant payment. Because no token balance is retained by the hub for
 // platform revenue, no `withdraw_platform_revenue` function is required.
+// Residual balances (rounding dust, mistaken transfers) are not platform revenue
+// and are intentionally not withdrawable here, so buyer refund balances on
+// expired invoices can never be touched by a platform withdrawal path.
 
 fn assert_fee_operator(env: &Env, caller: &Address) {
     caller.require_auth();

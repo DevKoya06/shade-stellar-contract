@@ -103,6 +103,12 @@ sequenceDiagram
 
 `get_platform_account(env)` ([`contracts/shade/src/components/platform_fee.rs:153`](../../contracts/shade/src/components/platform_fee.rs)) is the destination of every platform-fee transfer (see [Payment flows](payments.md#walkthrough-pay_invoice)). If it has never been set via `set_platform_account`, it **defaults to the current admin address** (`core::get_admin`) — platform fees silently flow into the admin's own wallet, not a dedicated treasury, until an admin explicitly configures one.
 
+## Where platform revenue goes
+
+Each payment's platform fee is transferred to the platform account in the same atomic call that pays the merchant (see [Payment flows](payments.md#walkthrough-pay_invoice)). Revenue is therefore routed at payment time to `get_platform_account`, not accumulated in the hub.
+
+Whether the hub can ever retain a token balance (rounding dust, mistaken transfers, or funds parked by the expired-invoice refund flow) has not been confirmed in this document. Until that is traced, do not assume the hub is balance-free, and treat any withdrawal requirement as open.
+
 Because the platform-fee transfer happens in the same atomic call as the merchant-fee transfer (see [Payment flows](payments.md#walkthrough-pay_invoice)), a misconfigured platform account — one that cannot receive the token (no trustline, a contract that rejects the transfer, etc.) — causes the *entire payment* to panic and roll back. A bad platform account doesn't just lose the platform's fee; it blocks the merchant from getting paid at all until the admin fixes it.
 
 ## Worked examples

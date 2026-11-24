@@ -9,7 +9,9 @@ const MAX_SLIPPAGE_BPS: u32 = 10_000;
 // merchant and the platform fee account) and are never parked on the hub, so
 // no platform revenue balance accumulates here. Because nothing builds up on the
 // hub from payments, no admin revenue withdrawal function is required from this
-// module. See docs/concepts/fees.md for the full platform fee routing.
+// module. Residual hub balances from other flows (rounding dust, mistaken direct
+// transfers) are addressed in the module that owns those flows. See
+// docs/concepts/fees.md for the full platform fee routing.
 
 pub fn validate_payment_payload(env: &Env, payload: &PaymentPayload) {
     match &payload.route {
